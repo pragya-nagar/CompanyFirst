@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="StudentContextModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="course">
+    <Key>
+      <PropertyRef Name="courseID" />
+    </Key>
+    <Property Name="courseName" Type="nchar" MaxLength="10" Nullable="false" />
+    <Property Name="courseID" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="student">
+    <Key>
+      <PropertyRef Name="studentID" />
+    </Key>
+    <Property Name="studentName" Type="nchar" MaxLength="10" Nullable="false" />
+    <Property Name="studentID" Type="int" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'StudentContext.dbo.studentcourse' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="studentcourse">
+    <Key>
+      <PropertyRef Name="ID" />
+      <PropertyRef Name="studentID" />
+      <PropertyRef Name="courseID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="studentID" Type="int" Nullable="false" />
+    <Property Name="courseID" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_studentcourse_course">
+    <End Role="course" Type="Self.course" Multiplicity="1" />
+    <End Role="studentcourse" Type="Self.studentcourse" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="course">
+        <PropertyRef Name="courseID" />
+      </Principal>
+      <Dependent Role="studentcourse">
+        <PropertyRef Name="courseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_studentcourse_student">
+    <End Role="student" Type="Self.student" Multiplicity="1" />
+    <End Role="studentcourse" Type="Self.studentcourse" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="student">
+        <PropertyRef Name="studentID" />
+      </Principal>
+      <Dependent Role="studentcourse">
+        <PropertyRef Name="studentID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="StudentContextModelStoreContainer">
+    <EntitySet Name="course" EntityType="Self.course" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="student" EntityType="Self.student" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="studentcourse" EntityType="Self.studentcourse" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [studentcourse].[ID] AS [ID], 
+    [studentcourse].[studentID] AS [studentID], 
+    [studentcourse].[courseID] AS [courseID]
+    FROM [dbo].[studentcourse] AS [studentcourse]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_studentcourse_course" Association="Self.FK_studentcourse_course">
+      <End Role="course" EntitySet="course" />
+      <End Role="studentcourse" EntitySet="studentcourse" />
+    </AssociationSet>
+    <AssociationSet Name="FK_studentcourse_student" Association="Self.FK_studentcourse_student">
+      <End Role="student" EntitySet="student" />
+      <End Role="studentcourse" EntitySet="studentcourse" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
